@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub PR Formatter",
+  "description": "Bold and hyperlink GitHub PR titles for markdown or Slack",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://github.com/*/*/pull/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
