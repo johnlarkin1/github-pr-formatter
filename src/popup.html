@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GitHub PR Formatter</title>
+    <link rel="stylesheet" type="text/css" href="popup.css" />
+  </head>
+  <body>
+    <div class="flex-container">
+      <div id="logo"></div>
+      <div class="options">
+        <div class="title">GitHub PR Formatter</div>
+        <div class="section">
+          <label for="formatStyle" class="format-style-label">Formatting Style: </label>
+          <select id="formatStyle">
+            <option value="slack">Slack</option>
+            <option value="word">Word</option>
+            <option value="notion">Notion</option>
+            <option value="bold">Bold</option>
+            <option value="italic">Italic</option>
+          </select>
+        </div>
+        <div class="enable-disable">
+          <span class="slider-text off">Disable</span>
+          <div class="slider-container">
+            <input type="checkbox" id="enableDisable" checked />
+            <label for="enableDisable" class="slider"></label>
+          </div>
+          <span class="slider-text on">Enable</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
