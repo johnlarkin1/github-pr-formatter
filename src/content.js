@@ -1,35 +1,53 @@
-const formatSelection = () => {
-  let selectedNode = window.getSelection().anchorNode;
+const formatSelection = (selectedNode) => {
+  const selection = selectedNode.textContent.trim();
+  const url = window.location.href;
+  const newText = `*[${selection}](${url})*`;
+  navigator.clipboard.writeText(newText);
+};
 
-  // Find the node so that the whole title is always selected
-  while (selectedNode && !selectedNode.classList?.contains("js-issue-title")) {
-    selectedNode = selectedNode.parentElement || selectedNode.parentNode;
+const applyStyleToTitle = (titleElement, style) => {
+  const selection = titleElement.textContent.trim();
+  const url = window.location.href;
+  let newText;
+
+  console.log('style:', style);
+  switch (style) {
+    case 'slack':
+      formatSelection(titleElement);
+      break;
+    case 'word':
+      newText = `<a href="${url}"><b>${selection}</b></a>`;
+      break;
+    case 'notion':
+      newText = `**[${selection}](${url})**`;
+      break;
+    case 'bold':
+      newText = `*${selection}*`;
+      break;
+    case 'italic':
+      newText = `**${selection}**`;
+      break;
+    default:
+      newText = selection;
+      break;
   }
 
-  if (selectedNode) {
-    const selection = selectedNode.textContent.trim();
-    const url = window.location.href;
-    const newText = `*[${selection}](${url})*`;
+  if (newText) {
     navigator.clipboard.writeText(newText);
   }
 };
 
-// Listen for explicit copy event
-document.addEventListener("copy", (event) => {
-  const selectedNode = window.getSelection().anchorNode;
-  const parentElement = selectedNode.parentElement || selectedNode.parentNode;
-
-  if (parentElement && parentElement.classList.contains("js-issue-title")) {
-    formatSelection();
-    event.preventDefault();
+document.addEventListener('click', function (event) {
+  let target = event.target;
+  while (target && !target.classList?.contains('js-issue-title')) {
+    target = target.parentElement;
   }
-});
 
-// Listen for selection change event
-document.addEventListener("selectionchange", () => {
-  const selectedNode = window.getSelection().anchorNode;
-  const parentElement = selectedNode.parentElement || selectedNode.parentNode;
-  if (parentElement && parentElement.classList.contains("js-issue-title")) {
-    formatSelection();
+  if (target && target.classList.contains('js-issue-title')) {
+    chrome.storage.sync.get(['formatStyle', 'enabled'], function (items) {
+      if (items.enabled) {
+        applyStyleToTitle(target, items.formatStyle);
+      }
+    });
   }
 });
