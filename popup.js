@@ -10,10 +10,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const formatStyleSelect = document.getElementById('formatStyle');
   const enableDisableCheckbox = document.getElementById('enableDisable');
 
-  // Load saved settings and update the UI
+  // Load saved settings and update the UI, initializing defaults if never set
   chrome.storage.sync.get(['formatStyle', 'enabled'], function (data) {
-    formatStyleSelect.value = data.formatStyle || 'slack';
-    enableDisableCheckbox.checked = data.enabled !== undefined ? data.enabled : true;
+    const formatStyle = data.formatStyle || 'slack';
+    const enabled = data.enabled !== undefined ? data.enabled : true;
+    formatStyleSelect.value = formatStyle;
+    enableDisableCheckbox.checked = enabled;
+
+    // Persist defaults on first load so content script can read them
+    if (data.formatStyle === undefined || data.enabled === undefined) {
+      chrome.storage.sync.set({ formatStyle, enabled });
+    }
   });
 
   // Save settings immediately
